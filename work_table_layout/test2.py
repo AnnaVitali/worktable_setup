@@ -11,30 +11,46 @@ SOLVER = 'highs'
 workpiece_processing = np.zeros((800, 1000), dtype=int)
 rr, cc = draw.rectangle_perimeter((177, 42), extent=(422, 893), shape=workpiece_processing.shape)
 workpiece_processing[rr,cc] = -1
+rr, cc = draw.rectangle((177, 42), extent=(422, 893), shape=workpiece_processing.shape)
+workpiece_processing[rr,cc] = 2
 
 
 rr, cc = draw.circle_perimeter(394, 206, radius=139, shape=workpiece_processing.shape)
 workpiece_processing[rr,cc] = -1
+rr, cc = draw.disk((394, 206), radius=138, shape=workpiece_processing.shape)
+workpiece_processing[rr,cc] = 2
 
-rr, cc = draw.circle_perimeter(394, 206, radius=123, shape=workpiece_processing.shape)
-workpiece_processing[rr,cc] = -1
+#rr, cc = draw.circle_perimeter(394, 206, radius=123, shape=workpiece_processing.shape)
+#workpiece_processing[rr,cc] = -1
 
 rr, cc = draw.circle_perimeter(393, 499, radius=104, shape=workpiece_processing.shape)
 workpiece_processing[rr,cc] = -1
+rr, cc = draw.disk((393, 499), radius=103, shape=workpiece_processing.shape)
+workpiece_processing[rr,cc] = 2
 
-rr, cc = draw.circle_perimeter(393, 499, radius=86, shape=workpiece_processing.shape)
-workpiece_processing[rr,cc] = -1
+#rr, cc = draw.circle_perimeter(393, 499, radius=86, shape=workpiece_processing.shape)
+#workpiece_processing[rr,cc] = -1
+
 
 rr, cc = draw.circle_perimeter(438, 700, radius=17, shape=workpiece_processing.shape)
 workpiece_processing[rr,cc] = -1
+rr, cc = draw.circle_perimeter(438, 700, radius=16, shape=workpiece_processing.shape)
+workpiece_processing[rr,cc] = 2
 
 
 rr, cc = draw.circle_perimeter(366, 701, radius=17, shape=workpiece_processing.shape)
 workpiece_processing[rr,cc] = -1
+rr, cc = draw.circle_perimeter(366, 701, radius=16, shape=workpiece_processing.shape)
+workpiece_processing[rr,cc] = 2
 
 
 rr, cc = draw.circle_perimeter(288, 703, radius=18, shape=workpiece_processing.shape)
 workpiece_processing[rr,cc] = -1
+rr, cc = draw.circle_perimeter(288, 703, radius=17, shape=workpiece_processing.shape)
+workpiece_processing[rr,cc] = 2
+
+plt.imshow(workpiece_processing)
+plt.show()
 
 workpiece_width = np.array(workpiece_processing).shape[1]
 workpiece_height = np.array(workpiece_processing).shape[0]

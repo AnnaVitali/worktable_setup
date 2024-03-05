@@ -11,6 +11,9 @@ workpiece_processing = np.zeros((16, 20), dtype=int)
 rr, cc = draw.circle_perimeter(8, 10, radius=3, shape=workpiece_processing.shape)
 workpiece_processing[rr, cc] = -1
 
+rr, cc = draw.disk((8, 10), radius=2, shape=workpiece_processing.shape)
+workpiece_processing[rr, cc] = 2
+
 workpiece_width = np.array(workpiece_processing).shape[1]
 workpiece_height = np.array(workpiece_processing).shape[0]
 
