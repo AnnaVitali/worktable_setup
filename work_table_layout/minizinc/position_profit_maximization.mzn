@@ -19,4 +19,4 @@ constraint forall(i in OBJECT where object_selected[i] == 1)
               (object_selected[i + ds] == 0)
            );
            
-solve maximize sum(i in OBJECT)(object_profit[i] * object_selected[i])
+solve :: int_search(object_selected, first_fail, indomain_min) maximize sum(i in OBJECT)(object_profit[i] * object_selected[i])
