@@ -8,29 +8,28 @@ from suction_cup_model import SuctionCupModel
 
 SOLVER = 'highs'
 
-workpiece_processing = np.zeros((13, 17), dtype=int)
+workpiece_processing = np.zeros((400, 450), dtype=int)
 
-rr, cc = draw.rectangle_perimeter((3, 3), extent=(7, 12), shape=workpiece_processing.shape)
+rr, cc = draw.rectangle_perimeter((1, 1), extent=(398, 448), shape=workpiece_processing.shape)
 workpiece_processing[rr, cc] = -1
-rr, cc = draw.rectangle((3, 3), extent=(7, 12), shape=workpiece_processing.shape)
-workpiece_processing[rr, cc] = np.where(workpiece_processing[rr, cc] != -1,  workpiece_processing[rr, cc]+2,
-                                        workpiece_processing[rr, cc])
 
-rr, cc = draw.circle_perimeter(6, 9, radius=2, shape=workpiece_processing.shape)
-workpiece_processing[rr, cc] = -1
-rr, cc = draw.disk((6, 9), radius=2, shape=workpiece_processing.shape)
-workpiece_processing[rr, cc] += 2
+rr, cc = draw.rectangle((1, 1), extent=(398, 448), shape=workpiece_processing.shape)
+workpiece_processing[rr, cc] = 2
+
+print(f"{workpiece_processing}")
+plt.imshow(workpiece_processing)
+plt.show()
 
 workpiece_width = np.array(workpiece_processing).shape[1]
 workpiece_height = np.array(workpiece_processing).shape[0]
 
 available_bars = 8
-bar_width = 2
-horizontal_security_distance = 2
+bar_width = 145
+horizontal_security_distance = 50
 
-cup_height = 2
 available_suction_cups = 24
-vertical_security_distance = 2
+cup_height = 145
+vertical_security_distance = 20
 
 workpiece = WorkpieceModel(workpiece_processing, workpiece_width, workpiece_height)
 workpiece_heat_map = workpiece.compute_heat_map(SOLVER)
@@ -57,8 +56,10 @@ for column, bar_present in enumerate(bar_location):
 
 np.set_printoptions(threshold=sys.maxsize)
 
-print(f"workpiece processing \n{workpiece_processing}")
-#print(f"workpiece heat map \n{workpiece_heat_map}")
+np.set_printoptions(threshold=sys.maxsize)
+
+#print(f"bars: \n{bar_location_image + suction_cups_image}")
+#print(f"cups: \n{suction_cups_image}")
 
 fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(8, 8))
 ax1.imshow(workpiece_processing)

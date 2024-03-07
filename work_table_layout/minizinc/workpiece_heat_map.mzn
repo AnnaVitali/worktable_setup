@@ -29,6 +29,8 @@ constraint forall(i in HEIGHT, j in WIDTH where workpiece_processing[i,j] == -1)
             )
           );
 
+
+
 constraint forall(i in HEIGHT, j in WIDTH where workpiece_processing[i,j] == -1)
           (
            workpiece_heat_map[i, j] = -1

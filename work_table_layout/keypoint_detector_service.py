@@ -1,6 +1,6 @@
 from minizinc import Instance, Model, Solver
 
-MODEL_NAME = './minizinc/workpiece_heat_map.mzn'
+MODEL_NAME = './minizinc/workpiece_heat_map_test.mzn'
 
 class KeypointDetectorService():
 
