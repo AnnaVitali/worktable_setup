@@ -8,21 +8,21 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
+*build/
+*develop-eggs/
+*dist/
+*downloads/
+*eggs/
+*.eggs/
+*lib/
+*lib64/
+*parts/
+*sdist/
+*var/
+*wheels/
+*share/python-wheels/
 *.egg-info/
-.installed.cfg
+*.installed.cfg
 *.egg
 MANIFEST
 
@@ -38,18 +38,18 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
+*.tox/
+*.nox/
+*.coverage
+*.coverage.*
+*.cache
+*nosetests.xml
+*coverage.xml
 *.cover
 *.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
+*.hypothesis/
+*.pytest_cache/
+*cover/
 
 # Translations
 *.mo
@@ -120,13 +120,13 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+*.env
+*.venv
+*env/
+*venv/
+*ENV/
+*env.bak/
+*venv.bak/
 
 # Spyder project settings
 .spyderproject
@@ -157,4 +157,4 @@ cython_debug/
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+*.idea/
