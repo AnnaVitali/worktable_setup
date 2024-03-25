@@ -23,8 +23,6 @@ class BarModel():
     def compute_bar_location(self):
         np.set_printoptions(threshold=sys.maxsize)
         profit_for_bar = self.__compute_bars_location_profit(self.workpiece_heat_map)
-        print(f"profit 772: {profit_for_bar[772]}")
-        print(f"profit 773: {profit_for_bar[773]}")
         bar_space_occupied = self.__compute_bars_space_occupied()
 
         bar_positioning_model = LocatorService(self.workpiece_width, self.available_bars,

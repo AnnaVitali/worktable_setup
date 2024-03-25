@@ -53,7 +53,7 @@ class WorkpieceModel():
 
         for i in range(len(self.heat_map_model[0])):
             for j in range(len(self.heat_map_model[1])):
-                if (i - center_x) ** 2 + (j - center_y) ** 2 <= radius ** 2:
+                if (i - center_y) ** 2 + (j - center_x) ** 2 <= radius ** 2:
                     self.heat_map_model[i, j] = np.where(self.workpiece_processing[i, j] != PASS_THROUGH_WORKING_POINT
                                                          and self.workpiece_processing[i, j] <= MAXIMUM_IMPORTANCE,
                                             self.heat_map_model[i, j] + INCREMENT_IMPORTANCE,

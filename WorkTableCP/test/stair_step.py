@@ -11,7 +11,7 @@ WORKPIECE_WIDTH = 715
 WORKPIECE_HEIGHT = 400
 AVAILABLE_BARS = 8
 BAR_SIZE = 145
-SECURITY_DISTANCE_BARS = 60
+SECURITY_DISTANCE_BARS = 70
 AVAILABLE_SUCTIONS_CUPS = 24
 SUCTION_CUPS_SIZE = 145
 SECURITY_DISTANCE_SUCTION_CUPS = 100
@@ -30,12 +30,12 @@ def get_workpiece_processing():
     workpiece_draw.draw_thick_line((689, 17), (689, 380), contouring_thickness, "right")
     workpiece_draw.draw_thick_line((689, 380), (665, 394), contouring_thickness, "right")
 
-    workpiece_draw.draw_circle_line((198, 65), 31, 20)
+    workpiece_draw.draw_circle_line((65, 198), 31, 20)
 
     thickness_small_circles = 10
-    workpiece_draw.draw_circle_line((354, 654), 10, thickness_small_circles)
-    workpiece_draw.draw_circle_line((198, 675), 10, thickness_small_circles)
-    workpiece_draw.draw_circle_line((43, 654), 10, thickness_small_circles)
+    workpiece_draw.draw_circle_line((654, 354), 10, thickness_small_circles)
+    workpiece_draw.draw_circle_line((675, 198), 10, thickness_small_circles)
+    workpiece_draw.draw_circle_line((654, 43), 10, thickness_small_circles)
 
 
     return workpiece_draw.get_workpiece_processing_draw()
@@ -47,11 +47,11 @@ def compute_workpiece_heat_map(workpiece_processing):
     workpiece_model.report_polygonal_piece([665, 20, 20, 665, 689, 689, 665],
                                            [394, 262, 135, 4, 17, 380, 394])
 
-    workpiece_model.report_round_peace((198, 65), 31)
-
-    workpiece_model.report_round_peace((354, 654), 10)
-    workpiece_model.report_round_peace((198, 675), 10)
-    workpiece_model.report_round_peace((43, 654), 10)
+    workpiece_model.report_round_peace((65, 198), 31)
+    
+    workpiece_model.report_round_peace((654, 354), 10)
+    workpiece_model.report_round_peace((675, 198), 10)
+    workpiece_model.report_round_peace((654, 43), 10)
 
     return workpiece_model.compute_heat_map()
 

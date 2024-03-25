@@ -24,11 +24,11 @@ def get_workpiece_processing():
     workpiece_draw.draw_perimeter_piece()
     workpiece_draw.draw_rectangle_line((42, 177), (936, 600), 20)
 
-    workpiece_draw.draw_circle_line((394, 206), 139, 12)
-    workpiece_draw.draw_circle_line((394, 500), 104, 12)
-    workpiece_draw.draw_circle_line((438, 700), 17, 12)
-    workpiece_draw.draw_circle_line((366, 700), 17, 12)
-    workpiece_draw.draw_circle_line((288, 700), 19, 12)
+    workpiece_draw.draw_circle_line((206, 394), 139, 12)
+    workpiece_draw.draw_circle_line((500, 394), 104, 12)
+    workpiece_draw.draw_circle_line((700, 438), 17, 12)
+    workpiece_draw.draw_circle_line((700, 366), 17, 12)
+    workpiece_draw.draw_circle_line((700, 288), 19, 12)
 
     return workpiece_draw.get_workpiece_processing_draw()
 
@@ -37,11 +37,12 @@ def compute_workpiece_heat_map(workpiece_processing):
     workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
 
     workpiece_model.report_rectangle_piece((42, 177), (936, 600))
-    workpiece_model.report_round_peace((394, 206), 139)
-    workpiece_model.report_round_peace((394, 500), 104)
-    workpiece_model.report_round_peace((438, 700), 17)
-    workpiece_model.report_round_peace((366, 700), 17)
-    workpiece_model.report_round_peace((288, 700), 19)
+
+    workpiece_model.report_round_peace((206, 394), 139)
+    workpiece_model.report_round_peace((500, 394), 104)
+    workpiece_model.report_round_peace((700, 438), 17)
+    workpiece_model.report_round_peace((700, 366), 17)
+    workpiece_model.report_round_peace((700, 288), 19)
 
     return workpiece_model.compute_heat_map()
 

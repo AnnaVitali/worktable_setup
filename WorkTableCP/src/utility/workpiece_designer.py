@@ -96,9 +96,10 @@ class WorkpieceDesigner():
                 self.workpiece_processing[y, end_x - i] = PASS_THROUGH_WORKING_POINT
 
     def draw_circle_line(self, center_coordinates, radius, thickness = 1):
+            x, y = center_coordinates
             for r in range(self.workpiece_processing.shape[0]):
                 for c in range(self.workpiece_processing.shape[1]):
-                    distance = np.sqrt((r - center_coordinates[0]) ** 2 + (c - center_coordinates[1]) ** 2)
+                    distance = np.sqrt((r - y) ** 2 + (c - x) ** 2)
                     if radius <= distance <= radius + thickness:
                         self.workpiece_processing[r, c] = PASS_THROUGH_WORKING_POINT
 
