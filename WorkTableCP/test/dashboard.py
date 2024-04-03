@@ -16,7 +16,7 @@ SECURITY_DISTANCE_BARS = 110
 AVAILABLE_SUCTIONS_CUPS = 24
 SUCTION_CUPS_SIZE = 145
 SECURITY_DISTANCE_SUCTION_CUPS = 40
-
+SUPPORT_AREA = 145 ** 2
 
 def get_workpiece_processing():
     workpiece_draw = WorkpieceDesigner(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
@@ -34,7 +34,7 @@ def get_workpiece_processing():
 
 
 def compute_workpiece_heat_map(workpiece_processing):
-    workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
+    workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, SUPPORT_AREA)
 
     workpiece_model.report_rectangle_piece((42, 177), (936, 600))
 
@@ -93,6 +93,6 @@ if __name__ == '__main__':
     fig, axs = plt.subplots(1, 3, figsize=(10, 10))
     axs[0].imshow(np.flipud(workpiece_processing))
     axs[1].imshow(np.flipud(workpiece_heat_map))
-    axs[2].imshow(np.flipud(workpiece_heat_map + bars_image + suction_cups_image))
+    axs[2].imshow(np.flipud(workpiece_processing + bars_image + suction_cups_image))
 
     plt.show()

@@ -1,7 +1,9 @@
 import os
 import subprocess
 import re
-MODEL_NAME = '../../minizinc/position_profit_maximization.mzn'
+#MODEL_NAME = '../../minizinc/position_profit_maximization.mzn'
+
+MODEL_NAME = '../../minizinc/TEST_position_profit.mzn'
 
 class LocatorService():
 
@@ -21,6 +23,7 @@ class LocatorService():
         file_dzn.write(f"capacity={self.capacity}; \n"
                        f"max_resources={self.max_resources}; \n"
                        f"max_positions={len(self.position_profit)}; \n"
+                       #f"coverage_positions={72}; \n"
                        f"object_size_in_x={self.object_sizes}; \n"
                        f"position_profit={self.position_profit}; \n")
         file_dzn.close()
@@ -32,6 +35,7 @@ class LocatorService():
                                   capture_output=True, text=True)
 
         print(result.stdout)
+        print(result.stderr)
         pattern = r"\[([^\[\]]*)\]"
         matches = re.findall(pattern, result.stdout)
 

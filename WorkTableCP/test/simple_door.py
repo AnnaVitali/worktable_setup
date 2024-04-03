@@ -1,4 +1,3 @@
-import subprocess
 from utility.workpiece_designer import WorkpieceDesigner
 from model.workpiece_model import WorkpieceModel
 from model.bar_model import BarModel
@@ -12,10 +11,11 @@ WORKPIECE_WIDTH = 2000
 WORKPIECE_HEIGHT = 800
 AVAILABLE_BARS = 8
 BAR_SIZE = 145
-SECURITY_DISTANCE_BARS = 200
+SECURITY_DISTANCE_BARS = 145
 AVAILABLE_SUCTIONS_CUPS = 24
 SUCTION_CUPS_SIZE = 145
 SECURITY_DISTANCE_SUCTION_CUPS = 145
+SUPPORT_AREA = 145 ** 2
 
 
 
@@ -23,14 +23,15 @@ def get_workpiece_processing():
     workpiece_draw = WorkpieceDesigner(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
 
     workpiece_draw.draw_perimeter_piece()
-    workpiece_draw.draw_rectangle_line((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1), 1)
+    workpiece_draw.draw_rectangle_line((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1),
+                                       1)
 
     return workpiece_draw.get_workpiece_processing_draw()
 
 
 def compute_workpiece_heat_map(workpiece_processing):
-    workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
-    workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1))
+    workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, SUPPORT_AREA)
+    workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH, WORKPIECE_HEIGHT))
     return workpiece_model.compute_heat_map()
 
 def compute_bars_location(workpiece_heat_map):

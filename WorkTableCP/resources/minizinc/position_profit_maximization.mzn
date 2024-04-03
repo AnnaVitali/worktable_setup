@@ -1,6 +1,4 @@
-include "disjunctive.mzn";
 include "alldifferent_except.mzn";
-include "diffn.mzn";
 include "increasing.mzn";
 
 int: capacity;
