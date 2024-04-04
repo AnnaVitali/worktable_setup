@@ -75,30 +75,32 @@ class WorkpieceModel():
                     max_x -= side_support_area
                     max_y -= side_support_area
         else:
-            min_center_x = int(width / 2) - side_support_area
-            min_center_y = int(height / 2) - side_support_area
-            max_center_x = int(width / 2) + side_support_area
-            max_center_y = int(height / 2) + side_support_area
+            offset = int(side_support_area / 2)#the side of the square should be as long as thes support
+            min_center_x = int(width / 2) - offset
+            min_center_y = int(height / 2) - offset
+            max_center_x = int(width / 2) + offset
+            max_center_y = int(height / 2) + offset
+
             for i in range(num_tiers, 0, -1):
                 print(f"inner min:{min_center_x}, {min_center_y}")
                 print(f"outer min:{min_x}, {min_y}")
                 print(f"inner max:{max_center_x}, {max_center_y}")
                 print(f"outer max:{max_x}, {max_y}")
                 if(min_center_y > min_y and min_center_x > min_x and max_center_y < max_y and max_center_x < max_x ):
-                    scores[min_center_y: max_center_y, min_center_x: min_center_x + side_support_area] = i
-                    scores[min_center_y: max_center_y, max_center_x - side_support_area: max_center_x] = i
-                    scores[min_center_y: min_center_y + side_support_area, min_center_x:max_center_x] = i
-                    scores[max_center_y - side_support_area:max_center_y, min_center_x:max_center_x] = i
+                    scores[min_center_y: max_center_y, min_center_x: min_center_x + offset] = i
+                    scores[min_center_y: max_center_y, max_center_x - offset: max_center_x] = i
+                    scores[min_center_y: min_center_y + offset, min_center_x:max_center_x] = i
+                    scores[max_center_y - offset:max_center_y, min_center_x:max_center_x] = i
 
                     scores[min_y:max_y, min_x: min_x + side_support_area] = i
                     scores[min_y:max_y, max_x - side_support_area: max_x] = i
                     scores[min_y: min_y + side_support_area, min_x:max_x] = i
                     scores[max_y - side_support_area:max_y, min_x:max_x] = i
 
-                    min_center_x -= side_support_area
-                    min_center_y -= side_support_area
-                    max_center_x += side_support_area
-                    max_center_y += side_support_area
+                    min_center_x -= offset
+                    min_center_y -= offset
+                    max_center_x += offset
+                    max_center_y += offset
 
                     min_x += side_support_area
                     min_y += side_support_area

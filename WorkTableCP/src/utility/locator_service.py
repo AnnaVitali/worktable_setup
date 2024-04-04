@@ -1,9 +1,10 @@
 import os
 import subprocess
 import re
-#MODEL_NAME = '../../minizinc/position_profit_maximization.mzn'
+import minizinc
+from minizinc import Model, Solver, Instance
 
-MODEL_NAME = '../../minizinc/TEST_position_profit.mzn'
+SOLVER_NAME = "chuffed"
 
 class LocatorService():
 
@@ -23,7 +24,6 @@ class LocatorService():
         file_dzn.write(f"capacity={self.capacity}; \n"
                        f"max_resources={self.max_resources}; \n"
                        f"max_positions={len(self.position_profit)}; \n"
-                       #f"coverage_positions={72}; \n"
                        f"object_size_in_x={self.object_sizes}; \n"
                        f"position_profit={self.position_profit}; \n")
         file_dzn.close()
@@ -31,17 +31,24 @@ class LocatorService():
     def resolve_instance(self):
         optimal_positions = None
         self.__create_data_file_minizinc()
-        result = subprocess.run(['./run_minizinc_model.sh'], cwd="./../resources/minizinc",
-                                  capture_output=True, text=True)
+        solver = Solver.lookup(SOLVER_NAME)
+        position_profit = Model("../resources/minizinc/position_profit_maximization.mzn")
+        position_profit.add_file("../resources/minizinc/position_profit_maximization.dzn")
+        instance = Instance(solver, position_profit)
+        print("Minizinc solving...")
+        result = instance.solve()["object_x"]
+        print(result)
+        #result = subprocess.run(['./run_minizinc_model.sh'], cwd="./../resources/minizinc",
+        #                          capture_output=True, text=True)
 
-        print(result.stdout)
-        print(result.stderr)
-        pattern = r"\[([^\[\]]*)\]"
-        matches = re.findall(pattern, result.stdout)
+        #print(result.stdout)
+        #print(result.stderr)
+        #pattern = r"\[([^\[\]]*)\]"
+        #matches = re.findall(pattern, result.stdout)
 
-        if matches:
-            optimal_positions = list(map(int, matches[0].split(', ')))
-        else:
-            SystemError("No response found")
-
-        return [value - 1 for value in optimal_positions if value != -1]
+        # if matches:
+        #     optimal_positions = list(map(int, matches[0].split(', ')))
+        # else:
+        #     SystemError("No response found")
+        #
+        return [value - 1 for value in result if value != -1]

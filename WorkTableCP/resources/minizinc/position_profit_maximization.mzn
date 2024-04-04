@@ -1,4 +1,5 @@
 include "alldifferent_except.mzn";
+include "diffn.mzn";
 include "increasing.mzn";
 
 int: capacity;
@@ -23,8 +24,9 @@ constraint sum(i in OBJECT where object_x[i] != -1)(object_size_in_x[i]) <= capa
 constraint increasing(object_x);
 
 %objects must not overlap
-constraint forall(i in 1..max_resources - 1 where object_x[i] != -1 /\ object_x[i + 1] != -1)
-           (object_x[i] + object_size_in_x[i] < object_x[i + 1]);
+%constraint diffn(object_x, [0 | i in OBJECT], object_size_in_x, [0 | i in OBJECT]);
+constraint forall(i in 1..max_resources - 1)
+           ((object_x[i] != -1 /\ object_x[i + 1] != -1) -> object_x[i] + object_size_in_x[i] < object_x[i + 1]);
 
 %profit-maximising positions must be prioritised
 solve maximize sum(i in OBJECT where object_x[i] != -1)(position_profit[object_x[i]])

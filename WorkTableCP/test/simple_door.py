@@ -1,11 +1,16 @@
-from utility.workpiece_designer import WorkpieceDesigner
-from model.workpiece_model import WorkpieceModel
-from model.bar_model import BarModel
-from model.suction_cup_model import SuctionCupModel
+import sys
+import os
+sys.path.append(os.path.abspath('..'))
+sys.path.append(os.path.abspath('../src'))
+from src.utility.workpiece_designer import WorkpieceDesigner
+from src.model.workpiece_model import WorkpieceModel
+from src.model.bar_model import BarModel
+from src.model.suction_cup_model import SuctionCupModel
 import numpy as np
 import matplotlib.pyplot as plt
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
+
 
 WORKPIECE_WIDTH = 2000
 WORKPIECE_HEIGHT = 800
@@ -35,7 +40,7 @@ def compute_workpiece_heat_map(workpiece_processing):
     return workpiece_model.compute_heat_map()
 
 def compute_bars_location(workpiece_heat_map):
-    bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, BAR_SIZE, SECURITY_DISTANCE_BARS)
+    bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, AVAILABLE_BARS, BAR_SIZE, SECURITY_DISTANCE_BARS)
     bars_location = bar_model.compute_bar_location()
     return bar_model, bars_location
 
@@ -67,11 +72,12 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
 if __name__ == '__main__':
     workpiece_processing = get_workpiece_processing()
     workpiece_heat_map = compute_workpiece_heat_map(workpiece_processing)
-
+    print("computing bar position")
     bar_model, bars_location = compute_bars_location(workpiece_heat_map)
+    print(bars_location)
     bar_used = bar_model.get_num_bars_used()
     bars_image = bar_model.get_bar_position_image()
-
+    print("computing suction cup position")
     suction_cups_locators, suction_cups_image = compute_suction_cup_location(workpiece_heat_map,
                                                                              bar_used, bars_location)
 
