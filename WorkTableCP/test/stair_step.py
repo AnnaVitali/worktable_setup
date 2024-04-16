@@ -1,11 +1,16 @@
-from utility.workpiece_designer import WorkpieceDesigner
-from model.workpiece_model import WorkpieceModel
-from model.bar_model import BarModel
-from model.suction_cup_model import SuctionCupModel
+import sys
+import os
+sys.path.append(os.path.abspath('..'))
+sys.path.append(os.path.abspath('../src'))
+from src.utility.workpiece_designer import WorkpieceDesigner
+from src.model.workpiece_model import WorkpieceModel
+from src.model.bar_model import BarModel
+from src.model.suction_cup_model import SuctionCupModel
 import numpy as np
 import matplotlib.pyplot as plt
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
+from sympy import Point2D
 
 WORKPIECE_WIDTH = 715
 WORKPIECE_HEIGHT = 400
@@ -15,6 +20,7 @@ SECURITY_DISTANCE_BARS = 70
 AVAILABLE_SUCTIONS_CUPS = 24
 SUCTION_CUPS_SIZE = 145
 SECURITY_DISTANCE_SUCTION_CUPS = 100
+SUPPORT_AREA = 145 ** 2
 
 
 def get_workpiece_processing():
@@ -41,11 +47,10 @@ def get_workpiece_processing():
     return workpiece_draw.get_workpiece_processing_draw()
 
 
-def compute_workpiece_heat_map(workpiece_processing):
-    workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
+def compute_workpiece_heat_map(workpiece_processing, points, sides):
+    workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, SUPPORT_AREA)
 
-    workpiece_model.report_polygonal_piece([665, 20, 20, 665, 689, 689, 665],
-                                           [394, 262, 135, 4, 17, 380, 394])
+    workpiece_model.report_polygonal_piece(points, sides)
 
     workpiece_model.report_round_peace((65, 198), 31)
     
@@ -89,19 +94,23 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
     return suction_cups_locators, suction_cups_image
 
 if __name__ == '__main__':
+    sides = [((665, 394), (20, 262)), ((20, 262), (20, 135)), ((20, 135), (665, 4)), ((665, 4), (689, 17)),
+             ((689, 17), (689, 380)), ((689, 380), (665, 394))]
+    points = (Point2D(665, 394), Point2D(20, 262), Point2D(20, 135), Point2D(665, 4), Point2D(689, 17),
+              Point2D(689, 380), Point2D(665, 394))
     workpiece_processing = get_workpiece_processing()
-    workpiece_heat_map = compute_workpiece_heat_map(workpiece_processing)
+    workpiece_heat_map = compute_workpiece_heat_map(workpiece_processing, points, sides)
     bar_model, bars_location = compute_bars_location(workpiece_heat_map)
 
     bar_used = bar_model.get_num_bars_used()
     bars_image = bar_model.get_bar_position_image()
 
-    suction_cups_locators, suction_cups_image = compute_suction_cup_location(workpiece_heat_map, bar_used,
-                                                                         bars_location)
+    suction_cups_locators, suction_cups_image = compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location)
 
     fig, axs = plt.subplots(1, 3, figsize=(10, 10))
     axs[0].imshow(workpiece_processing)
     axs[1].imshow(workpiece_heat_map)
-    axs[2].imshow(workpiece_heat_map + bars_image + suction_cups_image)
+    axs[2].imshow(workpiece_processing + bars_image + suction_cups_image)
 
+    #TODO analizzare perchè mette le barre quando ci sono dei valori -1
     plt.show()

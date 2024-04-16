@@ -1,6 +1,9 @@
-from utility.workpiece_designer import WorkpieceDesigner
-from model.workpiece_model import WorkpieceModel
-import numpy as np
+import sys
+import os
+sys.path.append(os.path.abspath('..'))
+sys.path.append(os.path.abspath('../src'))
+from src.utility.workpiece_designer import WorkpieceDesigner
+from src.model.workpiece_model import WorkpieceModel
 import matplotlib.pyplot as plt
 
 
