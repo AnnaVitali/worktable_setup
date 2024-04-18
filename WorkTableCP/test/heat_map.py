@@ -2,23 +2,17 @@ import sys
 import os
 sys.path.append(os.path.abspath('..'))
 sys.path.append(os.path.abspath('../src'))
-from src.utility.workpiece_designer import WorkpieceDesigner
-from src.model.workpiece_model import WorkpieceModel
+from src.utility.workpiece_drawer import WorkpieceDrawer
+from src.model.workpiece_heat_map_model import WorkpieceHeatMapModel
+from src.parameter.machine import Machine
 import matplotlib.pyplot as plt
 
 
 WORKPIECE_WIDTH = 2000
 WORKPIECE_HEIGHT = 800
-AVAILABLE_BARS = 8
-BAR_SIZE = 145
-SECURITY_DISTANCE_BARS = 200
-AVAILABLE_SUCTIONS_CUPS = 24
-SUCTION_CUPS_SIZE = 145
-SECURITY_DISTANCE_SUCTION_CUPS = 145
-SUPPORT_AREA = 145 ** 2
 
 def get_workpiece_processing():
-    workpiece_draw = WorkpieceDesigner(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
+    workpiece_draw = WorkpieceDrawer(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
 
     workpiece_draw.draw_perimeter_piece()
     workpiece_draw.draw_rectangle_line((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1), 1)
@@ -31,7 +25,7 @@ def get_workpiece_processing():
 
 
 def compute_workpiece_heat_map(workpiece_processing):
-    workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, SUPPORT_AREA)
+    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA.value)
     workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1))
     workpiece_model.report_rectangle_piece((1300, 50), (1700, 300))
     workpiece_model.report_round_peace((1000, 400), 200)

@@ -4,18 +4,16 @@ from sympy import Point2D
 
 sys.path.append(os.path.abspath('..'))
 sys.path.append(os.path.abspath('../src'))
-from src.utility.workpiece_designer import WorkpieceDesigner
-from src.model.workpiece_model import WorkpieceModel
+from src.utility.workpiece_drawer import WorkpieceDrawer
+from src.model.workpiece_heat_map_model import WorkpieceHeatMapModel
+from src.parameter.machine import Machine
 import matplotlib.pyplot as plt
 
 WORKPIECE_WIDTH = 715
 WORKPIECE_HEIGHT = 400
-SUPPORT_AREA = 145 ** 2
-
-
 
 def get_workpiece_processing(sides):
-    workpiece_draw = WorkpieceDesigner(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
+    workpiece_draw = WorkpieceDrawer(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
 
     workpiece_draw.draw_perimeter_piece()
 
@@ -31,20 +29,20 @@ def get_workpiece_processing(sides):
 
     return workpiece_draw.get_workpiece_processing_draw()
 
-def compute_workpiece_heat_map(workpiece_processing, sides):
-    workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, SUPPORT_AREA)
-    points = (Point2D(665, 394), Point2D(20, 135), Point2D(665, 4), Point2D(689, 17),
-              Point2D(689, 380), Point2D(665, 394))
+def compute_workpiece_heat_map(workpiece_processing, points, sides):
+    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA.value)
     workpiece_model.report_polygonal_piece(points, sides)
 
     return workpiece_model.compute_heat_map()
 
 if __name__ == '__main__':
+    points = (Point2D(665, 394), Point2D(20, 135), Point2D(665, 4), Point2D(689, 17),
+              Point2D(689, 380), Point2D(665, 394))
     sides = [((665, 394), (20, 262)), ((20, 262), (20, 135)), ((20, 135), (665, 4)), ((665, 4), (689, 17)),
              ((689, 17), (689, 380)), ((689, 380), (665, 394))]
 
     workpiece_processing = get_workpiece_processing(sides)
-    workpiece_heat_map = compute_workpiece_heat_map(workpiece_processing, sides)
+    workpiece_heat_map = compute_workpiece_heat_map(workpiece_processing, points, sides)
 
     fig, axs = plt.subplots(1, 2, figsize=(10, 10))
     axs[0].imshow(workpiece_processing)
