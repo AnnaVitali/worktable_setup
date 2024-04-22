@@ -27,4 +27,4 @@ class CirclePiece():
                 scores = self.__highlight_area_small_circle(distances, num_tiers)
             else:
                 scores = self.__highlight_area_big_circle(distances, num_tiers)
-            self.heat_map[distances <= self.radius] = scores[distances <= self.radius].astype(int)
+            self.heat_map[distances <= self.radius] += scores[distances <= self.radius].astype(int)
