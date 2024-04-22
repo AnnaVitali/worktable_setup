@@ -14,6 +14,8 @@ from concurrent.futures import wait
 
 WORKPIECE_WIDTH = 1000
 WORKPIECE_HEIGHT = 800
+SECURITY_DISTANCE_BARS = 110
+SECURITY_DISTANCE_SUCTION_CUPS = 40
 
 
 def get_workpiece_processing():
@@ -48,7 +50,7 @@ def compute_workpiece_heat_map(workpiece_processing):
 
 def compute_bars_location(workpiece_heat_map):
     bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, Machine.AVAILABLE_BARS.value, Machine.BAR_SIZE.value,
-                         Machine.SECURITY_DISTANCE_BARS.value)
+                         SECURITY_DISTANCE_BARS)
     bars_location = bar_model.compute_bar_location()
     return bar_model, bars_location
 
@@ -71,7 +73,7 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
             suction_cups_locators.append(SuctionCupModel(heat_map_bar, WORKPIECE_HEIGHT,
                                                          Machine.AVAILABLE_SUCTIONS_CUPS.value, Machine.BAR_SIZE.value,
                                                          Machine.SUCTION_CUPS_SIZE.value,
-                                                         Machine.SECURITY_DISTANCE_SUCTION_CUPS.value))
+                                                         SECURITY_DISTANCE_SUCTION_CUPS))
             results.append(executor.submit(suction_cups_locators[i].compute_suction_cups_location()))
             columns.append(column)
             i += 1

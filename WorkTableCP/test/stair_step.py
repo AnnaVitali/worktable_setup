@@ -15,6 +15,8 @@ from sympy import Point2D
 
 WORKPIECE_WIDTH = 715
 WORKPIECE_HEIGHT = 400
+SECURITY_DISTANCE_SUCTION_CUPS = 100
+SECURITY_DISTANCE_BARS = 60
 
 
 def get_workpiece_processing():
