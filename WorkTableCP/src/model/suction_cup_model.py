@@ -1,6 +1,5 @@
 import numpy as np
-import sys
-from utility.locator_service import LocatorService
+from model.locator import Locator
 
 class SuctionCupModel():
 
@@ -39,9 +38,9 @@ class SuctionCupModel():
         profit_for_suction_cup = self.__compute_suction_cups_profit()
         suction_cup_space_occupied = self.__compute_suction_cups_space_occupied()
 
-        suction_cup_positioning_model = LocatorService(self.workpiece_height, self.max_suction_cups_in_bar,
-                                                       self.max_suction_cups_positions,
-                                                       suction_cup_space_occupied, profit_for_suction_cup)
+        suction_cup_positioning_model = Locator(self.workpiece_height, self.max_suction_cups_in_bar,
+                                                self.max_suction_cups_positions,
+                                                suction_cup_space_occupied, profit_for_suction_cup)
 
         self.suction_cups_location = suction_cup_positioning_model.resolve_instance()
         return self.suction_cups_location

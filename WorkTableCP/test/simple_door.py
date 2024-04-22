@@ -15,6 +15,8 @@ from concurrent.futures import wait
 
 WORKPIECE_WIDTH = 2000
 WORKPIECE_HEIGHT = 800
+SECURITY_DISTANCE_BARS = 100
+SECURITY_DISTANCE_SUCTION_CUPS = 100
 
 def get_workpiece_processing():
     workpiece_draw = WorkpieceDrawer(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
@@ -32,8 +34,8 @@ def compute_workpiece_heat_map(workpiece_processing):
     return workpiece_model.compute_heat_map()
 
 def compute_bars_location(workpiece_heat_map):
-    bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, Machine.AVAILABLE_BARS, Machine.BAR_SIZE,
-                         Machine.SECURITY_DISTANCE_BARS.value)
+    bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, Machine.AVAILABLE_BARS.value, Machine.BAR_SIZE.value,
+                         SECURITY_DISTANCE_BARS)
     bars_location = bar_model.compute_bar_location()
     return bar_model, bars_location
 
@@ -47,10 +49,10 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
     n_threads = bar_used
     with ThreadPoolExecutor(n_threads) as executor:
         for column in bars_location:
-            heat_map_bar = np.array(workpiece_heat_map)[:, column: column + Machine.BAR_SIZE]
+            heat_map_bar = np.array(workpiece_heat_map)[:, column: column + Machine.BAR_SIZE.value]
             suction_cups_locators.append(SuctionCupModel(heat_map_bar, WORKPIECE_HEIGHT, Machine.AVAILABLE_SUCTIONS_CUPS.value,
                                                          Machine.BAR_SIZE.value, Machine.SUCTION_CUPS_SIZE.value,
-                                                         Machine.SECURITY_DISTANCE_SUCTION_CUPS.value))
+                                                            SECURITY_DISTANCE_SUCTION_CUPS))
             results.append(
                 executor.submit(suction_cups_locators[i].compute_suction_cups_location()))
             columns.append(column)

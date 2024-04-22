@@ -1,7 +1,7 @@
 import sys
 import os
-sys.path.append(os.path.abspath('..'))
-sys.path.append(os.path.abspath('../src'))
+sys.path.append(os.path.abspath('../..'))
+sys.path.append(os.path.abspath('../../src'))
 from src.utility.workpiece_drawer import WorkpieceDrawer
 from src.model.workpiece_heat_map_model import WorkpieceHeatMapModel
 from src.parameter.machine import Machine

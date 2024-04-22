@@ -36,7 +36,7 @@ def compute_workpiece_heat_map(workpiece_processing, points, sides):
     return workpiece_model.compute_heat_map()
 
 if __name__ == '__main__':
-    points = (Point2D(665, 394), Point2D(20, 135), Point2D(665, 4), Point2D(689, 17),
+    points = (Point2D(665, 394), Point2D(20, 262), Point2D(20, 135), Point2D(665, 4), Point2D(689, 17),
               Point2D(689, 380), Point2D(665, 394))
     sides = [((665, 394), (20, 262)), ((20, 262), (20, 135)), ((20, 135), (665, 4)), ((665, 4), (689, 17)),
              ((689, 17), (689, 380)), ((689, 380), (665, 394))]

@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-from utility.locator_service import LocatorService
+from model.locator import Locator
 
 class BarModel():
 
@@ -21,12 +21,11 @@ class BarModel():
         return [self.bar_width + self.security_distance] * (self.available_bars - 1) + [self.bar_width]
 
     def compute_bar_location(self):
-        np.set_printoptions(threshold=sys.maxsize)
         profit_for_bar = self.__compute_bars_location_profit(self.workpiece_heat_map)
         bar_space_occupied = self.__compute_bars_space_occupied()
 
-        bar_positioning_model = LocatorService(self.workpiece_width, self.available_bars,
-                                                 self.max_bar_positions, bar_space_occupied, profit_for_bar)
+        bar_positioning_model = Locator(self.workpiece_width, self.available_bars,
+                                        self.max_bar_positions, bar_space_occupied, profit_for_bar)
 
         self.bar_location = bar_positioning_model.resolve_instance()
         return self.bar_location

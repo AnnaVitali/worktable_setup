@@ -1,12 +1,9 @@
 import os
-import subprocess
-import re
-import minizinc
 from minizinc import Model, Solver, Instance
 
 SOLVER_NAME = "chuffed"
 
-class LocatorService():
+class Locator():
 
     def __init__(self, capacity, max_resources, number_of_object, object_sizes, position_profit):
         self.capacity = capacity
@@ -29,26 +26,17 @@ class LocatorService():
         file_dzn.close()
 
     def resolve_instance(self):
-        optimal_positions = None
         self.__create_data_file_minizinc()
         solver = Solver.lookup(SOLVER_NAME)
         position_profit = Model("../resources/minizinc/position_profit_maximization.mzn")
         position_profit.add_file("../resources/minizinc/position_profit_maximization.dzn")
         instance = Instance(solver, position_profit)
         print("Minizinc solving...")
-        result = instance.solve()["object_x"]
-        print(result)
-        #result = subprocess.run(['./run_minizinc_model.sh'], cwd="./../resources/minizinc",
-        #                          capture_output=True, text=True)
+        solution = instance.solve()
+        print(solution)
+        if(solution["objective"] != 0): #for chuffed values
+            result = solution["object_x"]
+        else:
+            result = []
 
-        #print(result.stdout)
-        #print(result.stderr)
-        #pattern = r"\[([^\[\]]*)\]"
-        #matches = re.findall(pattern, result.stdout)
-
-        # if matches:
-        #     optimal_positions = list(map(int, matches[0].split(', ')))
-        # else:
-        #     SystemError("No response found")
-        #
         return [value - 1 for value in result if value != -1]
