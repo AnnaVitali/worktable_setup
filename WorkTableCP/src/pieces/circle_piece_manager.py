@@ -1,5 +1,8 @@
 import numpy as np
 
+AREA_DISCRIMINATOR = 3
+
+
 class CirclePiece():
 
     def __init__(self, center, radius, heat_map, support_area):
@@ -23,8 +26,8 @@ class CirclePiece():
         num_tiers = int(np.ceil(circle_area / self.support_area))
 
         if circle_area > self.support_area:
-            if circle_area < self.support_area * 3:
+            if circle_area < self.support_area * AREA_DISCRIMINATOR and circle_area > self.support_area:
                 scores = self.__highlight_area_small_circle(distances, num_tiers)
-            else:
+            elif circle_area >= self.support_area * AREA_DISCRIMINATOR:
                 scores = self.__highlight_area_big_circle(distances, num_tiers)
             self.heat_map[distances <= self.radius] += scores[distances <= self.radius].astype(int)

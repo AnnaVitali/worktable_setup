@@ -46,6 +46,7 @@ class WorkpieceHeatMapModel():
     def report_rectangle_piece(self, start_coordinates, end_coordinates):
         rectangular_peace = RectangularPiece(start_coordinates, end_coordinates, self.heat_map,
                                              self.support_area)
+        print("highlighting rectangle area")
         rectangular_peace.highlight_area()
 
     def report_round_peace(self, center_coordinates, radius):
