@@ -32,12 +32,12 @@ def compute_workpiece_heat_map(workpiece_processing):
     workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1))
     print("Report second rectangle")
     workpiece_model.report_rectangle_piece((1300, 50), (1700, 300))
-    # print("Report first circle")
-    # workpiece_model.report_round_peace((1000, 400), 200)
-    # print("Report second circle")
-    # workpiece_model.report_round_peace((500, 200), 150)
-    # print("Report third circle")
-    # workpiece_model.report_round_peace((1500, 600), 104)
+    print("Report first circle")
+    workpiece_model.report_round_peace((1000, 400), 200)
+    print("Report second circle")
+    workpiece_model.report_round_peace((500, 200), 150)
+    print("Report third circle")
+    workpiece_model.report_round_peace((1500, 600), 104)
 
     return workpiece_model.compute_heat_map()
 

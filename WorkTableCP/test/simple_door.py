@@ -15,8 +15,8 @@ from concurrent.futures import wait
 
 WORKPIECE_WIDTH = 2000
 WORKPIECE_HEIGHT = 800
-SECURITY_DISTANCE_BARS = 100
-SECURITY_DISTANCE_SUCTION_CUPS = 100
+SECURITY_DISTANCE_BARS = 150
+SECURITY_DISTANCE_SUCTION_CUPS = 40
 
 def get_workpiece_processing():
     workpiece_draw = WorkpieceDrawer(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
@@ -30,7 +30,7 @@ def get_workpiece_processing():
 
 def compute_workpiece_heat_map(workpiece_processing):
     workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA.value)
-    workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH, WORKPIECE_HEIGHT))
+    workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1))
     return workpiece_model.compute_heat_map()
 
 def compute_bars_location(workpiece_heat_map):

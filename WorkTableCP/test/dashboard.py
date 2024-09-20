@@ -14,7 +14,7 @@ from concurrent.futures import wait
 
 WORKPIECE_WIDTH = 1000
 WORKPIECE_HEIGHT = 800
-SECURITY_DISTANCE_BARS = 110
+SECURITY_DISTANCE_BARS = 150
 SECURITY_DISTANCE_SUCTION_CUPS = 40
 
 
@@ -37,13 +37,14 @@ def compute_workpiece_heat_map(workpiece_processing):
     workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT,
                                             Machine.SUPPORT_AREA.value)
 
-    workpiece_model.report_rectangle_piece((42, 177), (936, 600))
+    workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1))
+    workpiece_model.report_rectangle_piece((42, 177), (936, 600), 10)
 
-    workpiece_model.report_round_peace((206, 394), 139)
-    workpiece_model.report_round_peace((500, 394), 104)
-    workpiece_model.report_round_peace((700, 438), 17)
-    workpiece_model.report_round_peace((700, 366), 17)
-    workpiece_model.report_round_peace((700, 288), 19)
+    workpiece_model.report_round_peace((206, 394), 139, 100)
+    workpiece_model.report_round_peace((500, 394), 104, 100)
+    workpiece_model.report_round_peace((700, 438), 17, 100)
+    workpiece_model.report_round_peace((700, 366), 17, 100)
+    workpiece_model.report_round_peace((700, 288), 19, 100)
 
     return workpiece_model.compute_heat_map()
 
