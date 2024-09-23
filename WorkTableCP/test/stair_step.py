@@ -2,10 +2,11 @@ import sys
 import os
 sys.path.append(os.path.abspath('..'))
 sys.path.append(os.path.abspath('../src'))
-from src.utility.workpiece_designer import WorkpieceDesigner
-from src.model.workpiece_model import WorkpieceModel
+from src.utility.workpiece_drawer import WorkpieceDrawer
+from src.model.workpiece_heat_map_model import WorkpieceHeatMapModel
 from src.model.bar_model import BarModel
 from src.model.suction_cup_model import SuctionCupModel
+from src.parameter.machine import Machine
 import numpy as np
 import matplotlib.pyplot as plt
 from concurrent.futures import ThreadPoolExecutor
@@ -14,17 +15,12 @@ from sympy import Point2D
 
 WORKPIECE_WIDTH = 715
 WORKPIECE_HEIGHT = 400
-AVAILABLE_BARS = 8
-BAR_SIZE = 145
-SECURITY_DISTANCE_BARS = 60
-AVAILABLE_SUCTIONS_CUPS = 24
-SUCTION_CUPS_SIZE = 145
 SECURITY_DISTANCE_SUCTION_CUPS = 100
-SUPPORT_AREA = 145 ** 2
+SECURITY_DISTANCE_BARS = 60
 
 
 def get_workpiece_processing():
-    workpiece_draw = WorkpieceDesigner(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
+    workpiece_draw = WorkpieceDrawer(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
 
     workpiece_draw.draw_perimeter_piece()
 
@@ -48,20 +44,21 @@ def get_workpiece_processing():
 
 
 def compute_workpiece_heat_map(workpiece_processing, points, sides):
-    workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, SUPPORT_AREA)
+    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA.value)
 
+    print("report polygonal piece")
     workpiece_model.report_polygonal_piece(points, sides)
 
     workpiece_model.report_round_peace((65, 198), 31)
     
-    workpiece_model.report_round_peace((654, 354), 10)
-    workpiece_model.report_round_peace((675, 198), 10)
-    workpiece_model.report_round_peace((654, 43), 10)
+    workpiece_model.report_round_peace((654, 354), 10, priority=10)
+    workpiece_model.report_round_peace((675, 198), 10, priority=10)
+    workpiece_model.report_round_peace((654, 43), 10, priority=10)
 
     return workpiece_model.compute_heat_map()
 
 def compute_bars_location(workpiece_heat_map):
-    bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, AVAILABLE_BARS, BAR_SIZE, SECURITY_DISTANCE_BARS)
+    bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, Machine.AVAILABLE_BARS.value, Machine.BAR_SIZE.value, SECURITY_DISTANCE_BARS)
     bars_location = bar_model.compute_bar_location()
     return bar_model, bars_location
 
@@ -78,9 +75,10 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
         for column in bars_location:
             np.set_printoptions(threshold=sys.maxsize)
 
-            heat_map_bar = workpiece_heat_map[:, column: column + BAR_SIZE]
-            suction_cups_locators.append(SuctionCupModel(heat_map_bar, WORKPIECE_HEIGHT, AVAILABLE_SUCTIONS_CUPS, BAR_SIZE,
-                                                  SUCTION_CUPS_SIZE, SECURITY_DISTANCE_SUCTION_CUPS))
+            heat_map_bar = workpiece_heat_map[:, column: column + Machine.BAR_SIZE.value]
+            suction_cups_locators.append(SuctionCupModel(heat_map_bar, WORKPIECE_HEIGHT, Machine.AVAILABLE_SUCTIONS_CUPS.value,
+                                                         Machine.BAR_SIZE.value, Machine.SUCTION_CUPS_SIZE.value,
+                                                         SECURITY_DISTANCE_SUCTION_CUPS))
             results.append(
                 executor.submit(suction_cups_locators[i].compute_suction_cups_location()))
             columns.append(column)
@@ -112,5 +110,4 @@ if __name__ == '__main__':
     axs[1].imshow(workpiece_heat_map)
     axs[2].imshow(workpiece_processing + bars_image + suction_cups_image)
 
-    #TODO analizzare perchè mette le barre quando ci sono dei valori -1
     plt.show()

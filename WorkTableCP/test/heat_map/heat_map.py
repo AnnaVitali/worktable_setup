@@ -1,24 +1,20 @@
 import sys
 import os
-sys.path.append(os.path.abspath('..'))
-sys.path.append(os.path.abspath('../src'))
-from src.utility.workpiece_designer import WorkpieceDesigner
-from src.model.workpiece_model import WorkpieceModel
+import time
+
+sys.path.append(os.path.abspath('../..'))
+sys.path.append(os.path.abspath('../../src'))
+from src.utility.workpiece_drawer import WorkpieceDrawer
+from src.model.workpiece_heat_map_model import WorkpieceHeatMapModel
+from src.parameter.machine import Machine
 import matplotlib.pyplot as plt
 
 
 WORKPIECE_WIDTH = 2000
 WORKPIECE_HEIGHT = 800
-AVAILABLE_BARS = 8
-BAR_SIZE = 145
-SECURITY_DISTANCE_BARS = 200
-AVAILABLE_SUCTIONS_CUPS = 24
-SUCTION_CUPS_SIZE = 145
-SECURITY_DISTANCE_SUCTION_CUPS = 145
-SUPPORT_AREA = 145 ** 2
 
 def get_workpiece_processing():
-    workpiece_draw = WorkpieceDesigner(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
+    workpiece_draw = WorkpieceDrawer(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
 
     workpiece_draw.draw_perimeter_piece()
     workpiece_draw.draw_rectangle_line((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1), 1)
@@ -31,18 +27,31 @@ def get_workpiece_processing():
 
 
 def compute_workpiece_heat_map(workpiece_processing):
-    workpiece_model = WorkpieceModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, SUPPORT_AREA)
+    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA.value)
+    print("Report first rectangle")
     workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1))
+    print("Report second rectangle")
     workpiece_model.report_rectangle_piece((1300, 50), (1700, 300))
+    print("Report first circle")
     workpiece_model.report_round_peace((1000, 400), 200)
+    print("Report second circle")
     workpiece_model.report_round_peace((500, 200), 150)
+    print("Report third circle")
     workpiece_model.report_round_peace((1500, 600), 104)
 
     return workpiece_model.compute_heat_map()
 
 if __name__ == '__main__':
+    start_time = time.time()
+    print("Drawing piece....")
     workpiece_processing = get_workpiece_processing()
+    duration = time.time() - start_time
+    print("Drawing piece took: ", duration)
+    print("Compute heat map....")
+    start_time = time.time()
     workpiece_heat_map = compute_workpiece_heat_map(workpiece_processing)
+    duration = time.time() - start_time
+    print("Compute heat map took: ", duration)
 
 
     fig, axs = plt.subplots(1, 2, figsize=(10, 10))
