@@ -44,20 +44,21 @@ def get_workpiece_processing():
 
 
 def compute_workpiece_heat_map(workpiece_processing, points, sides):
-    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA)
+    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA.value)
 
+    print("report polygonal piece")
     workpiece_model.report_polygonal_piece(points, sides)
 
     workpiece_model.report_round_peace((65, 198), 31)
     
-    workpiece_model.report_round_peace((654, 354), 10)
-    workpiece_model.report_round_peace((675, 198), 10)
-    workpiece_model.report_round_peace((654, 43), 10)
+    workpiece_model.report_round_peace((654, 354), 10, priority=10)
+    workpiece_model.report_round_peace((675, 198), 10, priority=10)
+    workpiece_model.report_round_peace((654, 43), 10, priority=10)
 
     return workpiece_model.compute_heat_map()
 
 def compute_bars_location(workpiece_heat_map):
-    bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, Machine.AVAILABLE_BARS, Machine.BAR_SIZE, Machine.SECURITY_DISTANCE_BARS)
+    bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, Machine.AVAILABLE_BARS.value, Machine.BAR_SIZE.value, SECURITY_DISTANCE_BARS)
     bars_location = bar_model.compute_bar_location()
     return bar_model, bars_location
 
@@ -74,10 +75,10 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
         for column in bars_location:
             np.set_printoptions(threshold=sys.maxsize)
 
-            heat_map_bar = workpiece_heat_map[:, column: column + Machine.BAR_SIZE]
-            suction_cups_locators.append(SuctionCupModel(heat_map_bar, WORKPIECE_HEIGHT, Machine.AVAILABLE_SUCTIONS_CUPS,
-                                                         Machine.BAR_SIZE, Machine.SUCTION_CUPS_SIZE,
-                                                         Machine.SECURITY_DISTANCE_SUCTION_CUPS))
+            heat_map_bar = workpiece_heat_map[:, column: column + Machine.BAR_SIZE.value]
+            suction_cups_locators.append(SuctionCupModel(heat_map_bar, WORKPIECE_HEIGHT, Machine.AVAILABLE_SUCTIONS_CUPS.value,
+                                                         Machine.BAR_SIZE.value, Machine.SUCTION_CUPS_SIZE.value,
+                                                         SECURITY_DISTANCE_SUCTION_CUPS))
             results.append(
                 executor.submit(suction_cups_locators[i].compute_suction_cups_location()))
             columns.append(column)

@@ -16,7 +16,7 @@ from concurrent.futures import wait
 WORKPIECE_WIDTH = 2000
 WORKPIECE_HEIGHT = 800
 SECURITY_DISTANCE_BARS = 150
-SECURITY_DISTANCE_SUCTION_CUPS = 40
+SECURITY_DISTANCE_SUCTION_CUPS = 110
 
 def get_workpiece_processing():
     workpiece_draw = WorkpieceDrawer(WORKPIECE_WIDTH, WORKPIECE_HEIGHT)
