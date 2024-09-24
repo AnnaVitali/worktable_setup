@@ -12,11 +12,12 @@ import matplotlib.pyplot as plt
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
 from sympy import Point2D
+from matplotlib.colors import ListedColormap
 
 WORKPIECE_WIDTH = 715
 WORKPIECE_HEIGHT = 400
 SECURITY_DISTANCE_SUCTION_CUPS = 100
-SECURITY_DISTANCE_BARS = 60
+SECURITY_DISTANCE_BARS = 120
 
 
 def get_workpiece_processing():
@@ -42,7 +43,6 @@ def get_workpiece_processing():
 
     return workpiece_draw.get_workpiece_processing_draw()
 
-
 def compute_workpiece_heat_map(workpiece_processing, points, sides):
     workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA.value)
 
@@ -62,7 +62,7 @@ def compute_bars_location(workpiece_heat_map):
     bars_location = bar_model.compute_bar_location()
     return bar_model, bars_location
 
-import sys
+
 def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
     suction_cups_image = np.zeros(np.array(workpiece_heat_map).shape)
     suction_cups_locators = []
@@ -91,6 +91,29 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
              np.array(workpiece_processing).shape, column)
     return suction_cups_locators, suction_cups_image
 
+def create_colormap():
+    cmap_workpiece = ListedColormap(['black', '#C19A6B'])  # -10 -> black, 0/1 -> beige
+
+    cmap_bars = ListedColormap(['white', '#484848'])  # 0 -> transparent, 1 -> gray (bars)
+    cmap_suction_cups = ListedColormap(['white', 'blue'])  # 0 -> transparent, 1 -> blue (suction cups)
+
+    return cmap_workpiece, cmap_bars, cmap_suction_cups
+
+
+def map_workpiece_values(workpiece):
+    workpiece[workpiece == 1] = 0
+    return workpiece
+
+
+def overlay_bars_and_suction_cups(workpiece, bars, suction_cups):
+    combined = np.copy(workpiece)
+
+    combined[bars == 1] = 1  # Bars in gray
+    combined[suction_cups == 1] = 2  # Suction cups in blue
+
+    return combined
+
+
 if __name__ == '__main__':
     sides = [((665, 394), (20, 262)), ((20, 262), (20, 135)), ((20, 135), (665, 4)), ((665, 4), (689, 17)),
              ((689, 17), (689, 380)), ((689, 380), (665, 394))]
@@ -103,11 +126,29 @@ if __name__ == '__main__':
     bar_used = bar_model.get_num_bars_used()
     bars_image = bar_model.get_bar_position_image()
 
-    suction_cups_locators, suction_cups_image = compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location)
+    suction_cups_locators, suction_cups_image = compute_suction_cup_location(workpiece_heat_map, bar_used,
+                                                                             bars_location)
 
-    fig, axs = plt.subplots(1, 3, figsize=(10, 10))
-    axs[0].imshow(workpiece_processing)
-    axs[1].imshow(workpiece_heat_map)
-    axs[2].imshow(workpiece_processing + bars_image + suction_cups_image)
+    workpiece_processing = map_workpiece_values(workpiece_processing)
 
+    cmap_workpiece, cmap_bars, cmap_suction_cups = create_colormap()
+
+    fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+
+    im0 = axs[0].imshow(np.flipud(workpiece_processing), cmap=cmap_workpiece, vmin=-10, vmax=0)
+    axs[0].set_title('Workpiece')
+
+    im1 = axs[1].imshow(np.flipud(workpiece_heat_map), cmap='viridis')
+    axs[1].set_title('Heatmap')
+
+    axs[2].imshow(np.flipud(workpiece_processing), cmap=cmap_workpiece, vmin=-10, vmax=0)
+    axs[2].imshow(np.flipud(bars_image), cmap=cmap_bars, alpha=0.6)
+    axs[2].imshow(np.flipud(suction_cups_image), cmap=cmap_suction_cups, alpha=0.6)
+    axs[2].set_title('Combined (Bars & Suction Cups)')
+
+    for ax in axs:
+        ax.axis('off')
+
+    plt.tight_layout()
     plt.show()
+
