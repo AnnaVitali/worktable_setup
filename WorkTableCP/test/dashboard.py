@@ -14,6 +14,7 @@ from concurrent.futures import wait
 from PIL import Image, ImageOps
 import numpy as np
 from matplotlib.colors import ListedColormap
+import sys
 
 WORKPIECE_WIDTH = 1000
 WORKPIECE_HEIGHT = 800
@@ -38,7 +39,7 @@ def get_workpiece_processing():
 
 def compute_workpiece_heat_map(workpiece_processing):
     workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT,
-                                            Machine.SUPPORT_AREA.value)
+                                            Machine.SUCTION_CUPS_SUPPORT_AREA.value)
 
     workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1))
     workpiece_model.report_rectangle_piece((42, 177), (936, 600), 10)
@@ -58,9 +59,6 @@ def compute_bars_location(workpiece_heat_map):
     bars_location = bar_model.compute_bar_location()
     return bar_model, bars_location
 
-
-import sys
-
 def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
     suction_cups_image = np.zeros(np.array(workpiece_heat_map).shape)
     suction_cups_locators = []
@@ -76,7 +74,7 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
             heat_map_bar = workpiece_heat_map[:, column: column + Machine.BAR_SIZE.value]
             suction_cups_locators.append(SuctionCupModel(heat_map_bar, WORKPIECE_HEIGHT,
                                                          Machine.AVAILABLE_SUCTIONS_CUPS.value, Machine.BAR_SIZE.value,
-                                                         Machine.SUCTION_CUPS_SIZE.value,
+                                                         Machine.SUCTION_CUPS_SUPPORT_DIMENSION.value,
                                                          SECURITY_DISTANCE_SUCTION_CUPS))
             results.append(executor.submit(suction_cups_locators[i].compute_suction_cups_location()))
             columns.append(column)

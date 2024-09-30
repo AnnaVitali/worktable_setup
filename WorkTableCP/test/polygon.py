@@ -30,7 +30,7 @@ def get_workpiece_processing(sides):
     return workpiece_draw.get_workpiece_processing_draw()
 
 def compute_workpiece_heat_map(workpiece_processing, points, sides):
-    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA.value)
+    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUCTION_CUPS_SUPPORT_AREA.value)
     workpiece_model.report_polygonal_piece(points, sides)
 
     return workpiece_model.compute_heat_map()

@@ -27,7 +27,7 @@ def get_workpiece_processing():
 
 
 def compute_workpiece_heat_map(workpiece_processing):
-    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA.value)
+    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUCTION_CUPS_SUPPORT_AREA.value)
     print("Report first rectangle")
     workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1))
     print("Report second rectangle")

@@ -30,7 +30,7 @@ def get_workpiece_processing():
 
 
 def compute_workpiece_heat_map(workpiece_processing):
-    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUPPORT_AREA.value)
+    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUCTION_CUPS_SUPPORT_AREA.value)
     workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1))
     return workpiece_model.compute_heat_map()
 
@@ -52,8 +52,8 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
         for column in bars_location:
             heat_map_bar = np.array(workpiece_heat_map)[:, column: column + Machine.BAR_SIZE.value]
             suction_cups_locators.append(SuctionCupModel(heat_map_bar, WORKPIECE_HEIGHT, Machine.AVAILABLE_SUCTIONS_CUPS.value,
-                                                         Machine.BAR_SIZE.value, Machine.SUCTION_CUPS_SIZE.value,
-                                                            SECURITY_DISTANCE_SUCTION_CUPS))
+                                                         Machine.BAR_SIZE.value, Machine.SUCTION_CUPS_SUPPORT_DIMENSION.value,
+                                                         SECURITY_DISTANCE_SUCTION_CUPS))
             results.append(
                 executor.submit(suction_cups_locators[i].compute_suction_cups_location()))
             columns.append(column)

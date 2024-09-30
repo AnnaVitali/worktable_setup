@@ -11,13 +11,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
-from sympy import Point2D
+from PIL import Image, ImageOps
+import numpy as np
 from matplotlib.colors import ListedColormap
 
-WORKPIECE_WIDTH = 715
+WORKPIECE_WIDTH = 450
 WORKPIECE_HEIGHT = 400
-SECURITY_DISTANCE_SUCTION_CUPS = 100
-SECURITY_DISTANCE_BARS = 120
+SECURITY_DISTANCE_BARS = 150
+SECURITY_DISTANCE_SUCTION_CUPS = 40
 
 
 def get_workpiece_processing():
@@ -25,43 +26,26 @@ def get_workpiece_processing():
 
     workpiece_draw.draw_perimeter_piece()
 
-    contouring_thickness = 20
-    workpiece_draw.draw_thick_line((665, 394), (20, 262), contouring_thickness, "up" )
-    workpiece_draw.draw_thick_line((20, 262), (20, 135), contouring_thickness, "left")
-    workpiece_draw.draw_thick_line((20, 135), (665, 4), contouring_thickness, "down")
-    workpiece_draw.draw_thick_line((665, 4), (689, 17), contouring_thickness, "right")
-    workpiece_draw.draw_thick_line((689, 17), (689, 380), contouring_thickness, "right")
-    workpiece_draw.draw_thick_line((689, 380), (665, 394), contouring_thickness, "right")
-
-    workpiece_draw.draw_circle_line((65, 198), 31, 20)
-
-    thickness_small_circles = 10
-    workpiece_draw.draw_circle_line((654, 354), 10, thickness_small_circles)
-    workpiece_draw.draw_circle_line((675, 198), 10, thickness_small_circles)
-    workpiece_draw.draw_circle_line((654, 43), 10, thickness_small_circles)
-
-
     return workpiece_draw.get_workpiece_processing_draw()
 
-def compute_workpiece_heat_map(workpiece_processing, points, sides):
-    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT, Machine.SUCTION_CUPS_SUPPORT_AREA.value)
 
-    print("report polygonal piece")
-    workpiece_model.report_polygonal_piece(points, sides)
+def compute_workpiece_heat_map(workpiece_processing):
+    workpiece_model = WorkpieceHeatMapModel(workpiece_processing, WORKPIECE_WIDTH, WORKPIECE_HEIGHT,
+                                            Machine.SUCTION_CUPS_SUPPORT_AREA.value)
 
-    workpiece_model.report_round_peace((65, 198), 31)
-    
-    workpiece_model.report_round_peace((654, 354), 10, priority=10)
-    workpiece_model.report_round_peace((675, 198), 10, priority=10)
-    workpiece_model.report_round_peace((654, 43), 10, priority=10)
+    workpiece_model.report_rectangle_piece((0, 0), (WORKPIECE_WIDTH - 1, WORKPIECE_HEIGHT - 1))
 
     return workpiece_model.compute_heat_map()
 
+
 def compute_bars_location(workpiece_heat_map):
-    bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, Machine.AVAILABLE_BARS.value, Machine.BAR_SIZE.value, SECURITY_DISTANCE_BARS)
+    bar_model = BarModel(workpiece_heat_map, WORKPIECE_WIDTH, Machine.AVAILABLE_BARS.value, Machine.BAR_SIZE.value,
+                         SECURITY_DISTANCE_BARS)
     bars_location = bar_model.compute_bar_location()
     return bar_model, bars_location
 
+
+import sys
 
 def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
     suction_cups_image = np.zeros(np.array(workpiece_heat_map).shape)
@@ -76,11 +60,11 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
             np.set_printoptions(threshold=sys.maxsize)
 
             heat_map_bar = workpiece_heat_map[:, column: column + Machine.BAR_SIZE.value]
-            suction_cups_locators.append(SuctionCupModel(heat_map_bar, WORKPIECE_HEIGHT, Machine.AVAILABLE_SUCTIONS_CUPS.value,
-                                                         Machine.BAR_SIZE.value, Machine.SUCTION_CUPS_SUPPORT_DIMENSION.value,
+            suction_cups_locators.append(SuctionCupModel(heat_map_bar, WORKPIECE_HEIGHT,
+                                                         Machine.AVAILABLE_SUCTIONS_CUPS.value, Machine.BAR_SIZE.value,
+                                                         Machine.SUCTION_CUPS_SUPPORT_DIMENSION.value,
                                                          SECURITY_DISTANCE_SUCTION_CUPS))
-            results.append(
-                executor.submit(suction_cups_locators[i].compute_suction_cups_location()))
+            results.append(executor.submit(suction_cups_locators[i].compute_suction_cups_location()))
             columns.append(column)
             i += 1
 
@@ -88,8 +72,9 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
 
         for index, column in enumerate(np.array(columns)):
             suction_cups_image += suction_cups_locators[index].get_suction_cup_position_image(
-             np.array(workpiece_processing).shape, column)
+                np.array(workpiece_processing).shape, column)
     return suction_cups_locators, suction_cups_image
+
 
 def create_colormap():
     cmap_workpiece = ListedColormap(['black', '#C19A6B'])  # -10 -> black, 0/1 -> beige
@@ -115,14 +100,10 @@ def overlay_bars_and_suction_cups(workpiece, bars, suction_cups):
 
 
 if __name__ == '__main__':
-    sides = [((665, 394), (20, 262)), ((20, 262), (20, 135)), ((20, 135), (665, 4)), ((665, 4), (689, 17)),
-             ((689, 17), (689, 380)), ((689, 380), (665, 394))]
-    points = (Point2D(665, 394), Point2D(20, 262), Point2D(20, 135), Point2D(665, 4), Point2D(689, 17),
-              Point2D(689, 380), Point2D(665, 394))
     workpiece_processing = get_workpiece_processing()
-    workpiece_heat_map = compute_workpiece_heat_map(workpiece_processing, points, sides)
-    bar_model, bars_location = compute_bars_location(workpiece_heat_map)
+    workpiece_heat_map = compute_workpiece_heat_map(workpiece_processing)
 
+    bar_model, bars_location = compute_bars_location(workpiece_heat_map)
     bar_used = bar_model.get_num_bars_used()
     bars_image = bar_model.get_bar_position_image()
 
