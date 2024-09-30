@@ -1,4 +1,7 @@
 import os
+from array import array
+
+import numpy as np
 from minizinc import Model, Solver, Instance
 
 SOLVER_NAME = "chuffed"
@@ -14,6 +17,13 @@ class Locator():
         self.instance = None
         self.model = None
         self.solver = None
+
+    def __normalize_profit(self, profit):
+        non_zero_values = np.unique([value for value in profit if value != 0])
+        value_to_rank = {value: rank + 1 for rank, value in enumerate(non_zero_values)}
+        normalized_profit = np.array([value_to_rank.get(value, 0) for value in profit])
+
+        return normalized_profit.tolist()
 
     def __create_data_file_minizinc(self):
         file_name = os.path.join('../resources/minizinc',"position_profit_maximization.dzn")
@@ -34,9 +44,12 @@ class Locator():
         print("Minizinc solving...")
         solution = instance.solve()
         print(solution)
-        if(solution["objective"] != 0): #for chuffed values
-            result = solution["object_x"]
+
+        if solution["objective"] != 0:  # for chuffed values
+            selected_x = solution["selected"]
+            object_x = solution["object_x"]
+            result = [object_x[i] - 1 for i in range(len(object_x)) if selected_x[i] == 1]
         else:
             result = []
 
-        return [value - 1 for value in result if value != -1]
+        return result

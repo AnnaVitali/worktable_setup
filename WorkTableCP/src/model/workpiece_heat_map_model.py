@@ -26,16 +26,12 @@ class WorkpieceHeatMapModel:
         # Efficient vectorized approach to check neighboring cells
         offsets = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])  # Up, Down, Left, Right
 
-        # Iterate through the pass-through points
         pass_through_points = np.argwhere(pass_through_mask)
         for point in pass_through_points:
-            i, j = point
-            # Add neighbors efficiently using broadcasting
             neighbors = point + offsets
             valid_neighbors = ((0 <= neighbors[:, 0]) & (neighbors[:, 0] < self.workpiece_height) &
                                (0 <= neighbors[:, 1]) & (neighbors[:, 1] < self.workpiece_width))
 
-            # Filter out valid neighbors
             for ni, nj in neighbors[valid_neighbors]:
                 if (self.workpiece_processing[ni, nj] != Workings.PASS_THROUGH_WORKING_POINT.value and
                         self.workpiece_processing[ni, nj] <= MAXIMUM_IMPORTANCE):

@@ -30,6 +30,8 @@ class BarModel:
 
     def __compute_bars_space_occupied(self):
         """Compute the space occupied by the bars."""
+        #result = np.full(self.available_bars - 1, self.bar_width + self.security_distance).tolist() + [self.bar_width]
+        #result.insert(0,0)
         return np.full(self.available_bars - 1, self.bar_width + self.security_distance).tolist() + [self.bar_width]
 
     def compute_bar_location(self):

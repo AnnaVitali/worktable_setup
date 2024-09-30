@@ -37,6 +37,8 @@ class SuctionCupModel:
 
     def __compute_suction_cups_space_occupied(self):
         """Compute the space occupied by each suction cup."""
+        #result = [self.cup_height + self.security_distance] * (self.max_suction_cups_in_bar - 1) + [self.cup_height]
+        #result.insert(0, 0)
         return [self.cup_height + self.security_distance] * (self.max_suction_cups_in_bar - 1) + [self.cup_height]
 
     def compute_suction_cups_location(self):
