@@ -17,7 +17,6 @@ class WorkpieceHeatMapModel:
 
     def __highlight_pass_through_workings(self):
         """Efficiently highlight pass-through working points."""
-        # Create a mask for PASS_THROUGH_WORKING_POINT
         pass_through_mask = self.workpiece_processing == Workings.PASS_THROUGH_WORKING_POINT.value
 
         # Update the heatmap where pass-through points exist
@@ -26,11 +25,8 @@ class WorkpieceHeatMapModel:
         # Efficient vectorized approach to check neighboring cells
         offsets = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])  # Up, Down, Left, Right
 
-        # Iterate through the pass-through points
         pass_through_points = np.argwhere(pass_through_mask)
         for point in pass_through_points:
-            i, j = point
-            # Add neighbors efficiently using broadcasting
             neighbors = point + offsets
             valid_neighbors = ((0 <= neighbors[:, 0]) & (neighbors[:, 0] < self.workpiece_height) &
                                (0 <= neighbors[:, 1]) & (neighbors[:, 1] < self.workpiece_width))

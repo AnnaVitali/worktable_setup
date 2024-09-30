@@ -81,6 +81,7 @@ def compute_suction_cup_location(workpiece_heat_map, bar_used, bars_location):
             results.append(executor.submit(suction_cups_locators[i].compute_suction_cups_location()))
             columns.append(column)
             i += 1
+            if i == 3: break
 
         wait(results)
 
