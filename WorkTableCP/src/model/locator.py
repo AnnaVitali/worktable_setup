@@ -31,7 +31,7 @@ class Locator():
         file_dzn.write(f"capacity={self.capacity}; \n"
                        f"max_resources={self.max_resources}; \n"
                        f"max_positions={len(self.position_profit)}; \n"
-                       f"object_size_in_x={self.object_sizes}; \n"
+                       f"object_size={self.object_sizes}; \n"
                        f"position_profit={self.position_profit}; \n")
         file_dzn.close()
 
@@ -46,8 +46,8 @@ class Locator():
         print(solution)
 
         if solution["objective"] != 0:  # for chuffed values
-            selected_x = solution["selected"]
-            object_x = solution["object_x"]
+            selected_x = solution["object_selected"]
+            object_x = solution["object_position"]
             result = [object_x[i] - 1 for i in range(len(object_x)) if selected_x[i] == 1]
         else:
             result = []
